@@ -20,5 +20,21 @@ docker info
 ```
 If something goes wrong, look this [Tutorial](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/create-container-image.html#create-container-image-install-docker) (click on **Installing Docker on Amazon Linux 2** there)
 
-##### Clone this project to EC2
+##### 3. Clone this project to EC2
 Run
+```commandline
+git clone https://github.com/ispectre87/PM_Project_2.git
+cd PM_Project_2
+docker build -t project_2:v.0.1 .
+docker run -p 80:8080 project_2:v.0.1 -t api
+```
+Go to EC2 Public IPv4 DNS, add **/hello** to it, you must see message.
+Note, that protocol must be HTTP, link must be like **http://**bla-bla-bla.compute.amazonaws.com**/hello**.
+
+##### 4. Connect API to S3
+
+Roman must write something usefull here))
+
+##### 5. Connect API to RDS with Postgres
+
+Someone else must write something usefull here))
