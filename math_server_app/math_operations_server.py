@@ -30,4 +30,4 @@ async def age_range(request: Request, frm: int, to: int):
 
 
 if __name__ == '__main__':
-    uvicorn.run("math_operations_server:app", host='0.0.0.0', port=81, reload=True)
+    uvicorn.run("math_operations_server:app", host='0.0.0.0', port=8766, reload=True)
