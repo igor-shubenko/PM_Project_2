@@ -20,7 +20,7 @@ docker info
 ```
 If something goes wrong, look this [Tutorial](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/create-container-image.html#create-container-image-install-docker) (click on **Installing Docker on Amazon Linux 2** there)
 
-##### 3. Clone this project to EC2
+##### 3. Clone this project to EC2 and launch API
 Run
 ```commandline
 git clone https://github.com/ispectre87/PM_Project_2.git
