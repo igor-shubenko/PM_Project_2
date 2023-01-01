@@ -62,7 +62,7 @@ sudo yum install postgresql13 postgresql13-server
 ```
 To connect to RDS Postgres run:
 ```commandline
-psql --host=<your_host> --port=5432 --username=pm_user --dbname=pm_db
+psql --host=your_host --port=5432 --username=pm_user --dbname=pm_db
 ```
 Now you can run SQL-commands directly to database
 
