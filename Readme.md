@@ -38,4 +38,3 @@ Roman must write something usefull here))
 ##### 5. Connect API to RDS with Postgres
 
 Someone else must write something usefull here))
-Test string

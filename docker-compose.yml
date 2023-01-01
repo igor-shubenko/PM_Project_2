@@ -1,0 +1,26 @@
+version: '3.1'
+
+services:
+  crud_server:
+    build: ./crud_server_app
+    restart: always
+    env_file:
+      - ./crud_server_app/.env
+    ports:
+      - 80:8765
+    volumes:
+      - ./crud_server_app:/app
+
+  math_server:
+    build: ./math_server_app
+    depends_on:
+      - crud_server
+    restart: always
+    environment:
+      - CRUD_SERVER_LINK=http://crud_server:8765/get/all
+    ports:
+      - 81:8766
+    volumes:
+      - ./math_server_app:/app
+
+
