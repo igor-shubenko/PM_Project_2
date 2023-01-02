@@ -22,7 +22,7 @@ def startup_event_handler(app: FastAPI):
 
 def shutdown_event_handler(app: FastAPI):
     async def wrapper():
-        write_to_file()
+        write_to_file(pool)
         upload_file_to_s3()
         await pool.close()
     return wrapper
