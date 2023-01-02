@@ -90,6 +90,29 @@ aws s3 ls s3://pm-bucket-project
 ```
 You can see all files in the bucket. Note that, "pm-bucket-project" is the name of bucket.
 ##### 5. Connect API to RDS with Postgres
+Create database on RDS
+In crud_server_app/.env write database credentials.
 
-Someone else must write something usefull here))
-Test string
+
+If you want to connect to RDS Postgres directly from EC2 terminal, install _psql_ on EC2:
+
+Copy whole block, Enter
+```commandline
+sudo tee /etc/yum.repos.d/pgdg.repo<<EOF
+[pgdg13]
+name=PostgreSQL 13 for RHEL/CentOS 7 - x86_64
+baseurl=https://download.postgresql.org/pub/repos/yum/13/redhat/rhel-7-x86_64
+enabled=1
+gpgcheck=0
+EOF
+```
+Then
+```commandline
+sudo yum update
+sudo yum install postgresql13 postgresql13-server
+```
+To connect to RDS Postgres run:
+```commandline
+psql --host=your_host --port=5432 --username=pm_user --dbname=pm_db
+```
+Now you can run SQL-commands directly to database
