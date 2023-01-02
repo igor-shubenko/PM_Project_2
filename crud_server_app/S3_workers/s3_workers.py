@@ -3,8 +3,6 @@ import os
 
 import boto3
 
-from postgres_workers.users_worker import UserDataWorker
-
 BUCKET_NAME = os.environ.get("BUCKET_NAME")
 FILE_NAME = os.environ.get("FILE_NAME")
 s3 = boto3.client('s3')
@@ -18,16 +16,16 @@ async def download_file_from_s3():
         print("Exception during download from S3: ", e)
 
 
-async def write_to_postgres(pool):
-    postgres_writer = UserDataWorker(pool=pool)
+async def write_to_postgres(user_data_worker):
     with open(FILE_NAME, 'r', encoding='utf-8') as f:
         for line in f.readlines():
             record = json.loads(line)
-            await postgres_writer.create_record(record)
+            record.pop('id')
+            await user_data_worker.create_record(record)
 
 
-async def write_to_file(pool):
-    data = await UserDataWorker(pool=pool).read_record('all')
+async def write_to_file(user_data_worker):
+    data = await user_data_worker.read_record('all')
     print("Data type is", type(data))
     try:
         with open(FILE_NAME, "w") as f:
