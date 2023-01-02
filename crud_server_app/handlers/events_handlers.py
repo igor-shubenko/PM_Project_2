@@ -16,13 +16,13 @@ def startup_event_handler(app: FastAPI):
     async def wrapper():
         app.user_data_worker = UserDataWorker(pool=pool)
         await pool.open(wait=True)
-        download_file_from_s3()
+        await download_file_from_s3()
     return wrapper
 
 
 def shutdown_event_handler(app: FastAPI):
     async def wrapper():
-        write_to_file(pool)
-        upload_file_to_s3()
+        await write_to_file(pool)
+        await upload_file_to_s3()
         await pool.close()
     return wrapper
