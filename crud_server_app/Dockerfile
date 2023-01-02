@@ -14,6 +14,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
 
 RUN adduser --disabled-password crud_server_user
+RUN chown crud_server_user:crud_server_user -R /app/
 USER crud_server_user
 
 EXPOSE 80/tcp
