@@ -16,7 +16,7 @@ def startup_event_handler(app: FastAPI):
     async def wrapper():
         app.user_data_worker = UserDataWorker(pool=pool)
         await pool.open(wait=True)
-        with open('SQL_scripts/create_table_users.sql', 'r') as f:
+        with open('postgres_workers/SQL_scripts/create_table_users.sql', 'r') as f:
             create_table_script = f.read()
         await app.user_data_worker._execute_query(create_table_script)
         await download_file_from_s3()
