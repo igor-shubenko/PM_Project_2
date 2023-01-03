@@ -20,16 +20,39 @@ docker info
 ```
 If something goes wrong, look this [Tutorial](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/create-container-image.html#create-container-image-install-docker) (click on **Installing Docker on Amazon Linux 2** there)
 
+Install docker-compose
+
+```commandline
+sudo curl -L https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m) -o /usr/local/bin/docker-compose
+sudo chmod +x /usr/local/bin/docker-compose
+docker-compose version
+```
+
 ##### 3. Clone this project to EC2 and launch API
+Install Git on EC2
+```commandline
+sudo yum update -y
+sudo yum install git -y
+git version
+```
 Run
 ```commandline
 git clone https://github.com/ispectre87/PM_Project_2.git
 cd PM_Project_2
-docker build -t project_2:v.0.1 .
-docker run -p 80:8080 project_2:v.0.1 -t api
+docker-compose up
 ```
 Go to EC2 Public IPv4 DNS, add **/hello** to it, you must see message.
 Note, that protocol must be HTTP, link must be like **http://**bla-bla-bla.compute.amazonaws.com**/hello**.
+
+To set docker-compose start automatically on EC2 launch:
+```commandline
+sudo crontab -e
+```
+In opened file
+```text
+@reboot docker-compose -f /home/ec2-user/PM_Project_2/docker-compose.yml up
+```
+Save the file.
 
 ##### 4. Connect API to S3
 ###### Create an IAM instance profile:
@@ -38,32 +61,7 @@ Note, that protocol must be HTTP, link must be like **http://**bla-bla-bla.compu
 3) Select **AWS Service**, and then choose **EC2** under **Use Case**.
 4) Select **Next**.
 5) Select **Create policy**.
-6) Choose **JSON** and enter:
-```commandline
-{
-    "Version": "2012-10-17",
-    "Statement": [
-        {
-            "Effect": "Allow",
-            "Action": [
-                "s3:ListBucket"
-            ],
-            "Resource": "arn:aws:s3:::pm-bucket-project"
-        },
-        {
-            "Action": [
-                "s3:DeleteObject",
-                "s3:GetObject",
-                "s3:PutObject",
-                "s3:PutObjectAcl"
-            ],
-            "Effect": "Allow",
-            "Resource": "arn:aws:s3:::pm-bucket-project/*"
-        }
-    ]
-}
-```
-
+6) Choose **S3FullAccess** policy from list (or another needed policy)
 7) Choose next and set name to policy.
 8) Return to **Create role** and choose policy, which you created.
 9) Select **Next**.
@@ -74,25 +72,18 @@ Note, that protocol must be HTTP, link must be like **http://**bla-bla-bla.compu
 3) Select the instance.
 4) Choose the **Actions** tab, choose **Security**, and then choose **Modify IAM role**
 ###### Validate access to S3 bucket
-1) Install the AWS CLI on your EC2 instance.
+
+Command for checking connection:
 ```commandline
-sudo apt-get update 
-sudo apt-get install -yy less
-sudo apt-get install curl
-sudo apt-get install unzip
-curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-unzip awscliv2.zip
-sudo ./aws/install
-```
-2) Enter following command:
-```commandline
-aws s3 ls s3://pm-bucket-project
+aws s3 ls s3://<bucket_name>
 ```
 You can see all files in the bucket. Note that, "pm-bucket-project" is the name of bucket.
+
 ##### 5. Connect API to RDS with Postgres
 Create database on RDS
+Don't connect it to EC2 instance, create security groups instead, one with inbound rules for database and other
+for outbound rules for all instances and sources
 In crud_server_app/.env write database credentials.
-
 
 If you want to connect to RDS Postgres directly from EC2 terminal, install _psql_ on EC2:
 
