@@ -4,55 +4,23 @@
 Create EC2 instance by this [Tutorial](https://catalog.workshops.aws/general-immersionday/en-US/basic-modules/10-ec2/ec2-linux)
 Note the number of port, that set when we create security rule. We need it to specify it when launching docker. In tutorial it is port 80 for HTTP protocol.
 
-##### 2. Install Docker on EC2
-Connect EC2 by SSH and run:
+##### 2. Install all needed to EC2
 ```commandline
 sudo yum update -y
-sudo amazon-linux-extras install docker
+sudo amazon-linux-extras install docker -y
 sudo service docker start
 sudo systemctl enable docker
 sudo usermod -a -G docker ec2-user
-sudo reboot
-```
-Wait some time, while instance reboot and run:
-```commandline
-docker info
-```
-If something goes wrong, look this [Tutorial](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/create-container-image.html#create-container-image-install-docker) (click on **Installing Docker on Amazon Linux 2** there)
-
-Install docker-compose
-
-```commandline
 sudo curl -L https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m) -o /usr/local/bin/docker-compose
 sudo chmod +x /usr/local/bin/docker-compose
-docker-compose version
-```
-
-##### 3. Clone this project to EC2 and launch API
-Install Git on EC2
-```commandline
 sudo yum update -y
 sudo yum install git -y
-git version
-```
-Run
-```commandline
 git clone https://github.com/ispectre87/PM_Project_2.git
-cd PM_Project_2
-docker-compose up
+echo "@reboot docker-compose -f /home/ec2-user/PM_Project_2/docker-compose.yml up" > tmfl
+sudo crontab < tmfl
+docker version
+docker-compose version
 ```
-Go to EC2 Public IPv4 DNS, add **/hello** to it, you must see message.
-Note, that protocol must be HTTP, link must be like **http://**bla-bla-bla.compute.amazonaws.com**/hello**.
-
-To set docker-compose start automatically on EC2 launch:
-```commandline
-sudo crontab -e
-```
-In opened file
-```text
-@reboot docker-compose -f /home/ec2-user/PM_Project_2/docker-compose.yml up
-```
-Save the file.
 
 ##### 4. Connect API to S3
 ###### Create an IAM instance profile:
@@ -107,3 +75,10 @@ To connect to RDS Postgres run:
 psql --host=your_host --port=5432 --username=pm_user --dbname=pm_db
 ```
 Now you can run SQL-commands directly to database
+
+To update project credentials run:
+```commandline
+echo "DATABASE_LINK=<host> port=5432 dbname=<db_name> connect_timeout=10 user=<username> password=<password>
+BUCKET_NAME=<bucket_name>
+FILE_NAME=<file_name> > /Project_2_AWS/crud_server_app/.env
+```

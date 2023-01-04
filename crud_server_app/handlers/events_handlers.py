@@ -4,9 +4,8 @@ from fastapi import FastAPI
 from psycopg_pool import AsyncConnectionPool
 
 from postgres_workers.users_worker import UserDataWorker
-from postgres_workers.events_worker import EventsDataWorker
-from postgres_workers.bets_worker import BetsDataWorker
-from S3_workers.s3_workers import download_file_from_s3, upload_file_to_s3, write_to_file, write_to_postgres
+from event_workers.event_workers import download_file_from_s3, upload_file_to_s3, write_to_file, write_to_postgres
+from event_workers.event_workers import init_table_users
 
 connection_string = os.environ.get("DATABASE_LINK")
 pool = AsyncConnectionPool(connection_string, open=False)
@@ -16,9 +15,7 @@ def startup_event_handler(app: FastAPI):
     async def wrapper():
         app.user_data_worker = UserDataWorker(pool=pool)
         await pool.open(wait=True)
-        with open('postgres_workers/SQL_scripts/create_table_users.sql', 'r') as f:
-            create_table_script = f.read()
-        await app.user_data_worker._execute_query(create_table_script)
+        await init_table_users(app.user_data_worker)
         await download_file_from_s3()
         await write_to_postgres(app.user_data_worker)
     return wrapper

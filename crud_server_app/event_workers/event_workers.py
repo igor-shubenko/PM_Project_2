@@ -8,6 +8,12 @@ FILE_NAME = os.environ.get("FILE_NAME")
 s3 = boto3.client('s3')
 
 
+async def init_table_users(user_data_worker):
+    with open('postgres_workers/SQL_scripts/create_table_users.sql', 'r') as f:
+        create_table_script = f.read()
+    await user_data_worker.execute_query(create_table_script)
+
+
 async def download_file_from_s3():
     try:
         s3.download_file(BUCKET_NAME, FILE_NAME, FILE_NAME)
@@ -17,11 +23,13 @@ async def download_file_from_s3():
 
 
 async def write_to_postgres(user_data_worker):
-    with open(FILE_NAME, 'r', encoding='utf-8') as f:
-        for line in f.readlines():
-            record = json.loads(line)
-            record.pop('id')
-            await user_data_worker.create_record(record)
+    data_in_db = await user_data_worker.read_record('all')
+    if not data_in_db:
+        with open(FILE_NAME, 'r', encoding='utf-8') as f:
+            for line in f.readlines():
+                record = json.loads(line)
+                record.pop('id')
+                await user_data_worker.create_record(record)
 
 
 async def write_to_file(user_data_worker):
