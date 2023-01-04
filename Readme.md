@@ -18,6 +18,7 @@ sudo yum install git -y
 git clone https://github.com/ispectre87/PM_Project_2.git
 echo "@reboot docker-compose -f /home/ec2-user/PM_Project_2/docker-compose.yml up" > tmfl
 sudo crontab < tmfl
+crontab < tmfl
 docker version
 docker-compose version
 ```
@@ -78,7 +79,5 @@ Now you can run SQL-commands directly to database
 
 To update project credentials run:
 ```commandline
-echo "DATABASE_LINK=<host> port=5432 dbname=<db_name> connect_timeout=10 user=<username> password=<password>
-BUCKET_NAME=<bucket_name>
-FILE_NAME=<file_name> > /Project_2_AWS/crud_server_app/.env
+echo "DATABASE_LINK=project-2-database.cfuc4davkvkm.eu-central-1.rds.amazonaws.com port=5432 dbname=pm_db connect_timeout=10 user=pm_user password=12131415 BUCKET_NAME=ispectre-test-bucket FILE_NAME=data.jsonl" > ./PM_Project_2/crud_server_app/.env
 ```

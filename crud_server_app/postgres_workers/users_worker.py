@@ -17,5 +17,5 @@ class UserDataWorker(QueryMaker):
                              'balance')):
         super().__init__(pool=pool, table_name=table_name, cols_names=cols_names)
 
-    def execute_query(self, query: str, values: tuple = None):
-        self._execute_query(query, values)
+    async def execute_query(self, query: str, values: tuple = None):
+        await self._execute_query(query, values)
