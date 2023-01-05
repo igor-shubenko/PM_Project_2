@@ -16,8 +16,6 @@ sudo chmod +x /usr/local/bin/docker-compose
 sudo yum update -y
 sudo yum install git -y
 git clone https://github.com/ispectre87/PM_Project_2.git
-echo "@reboot docker-compose -f /home/ec2-user/PM_Project_2/docker-compose.yml up" > tmfl
-sudo crontab < tmfl
 docker version
 docker-compose version
 ```
