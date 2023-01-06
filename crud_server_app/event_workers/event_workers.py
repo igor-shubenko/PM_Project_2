@@ -16,7 +16,7 @@ async def init_table_users(user_data_worker):
 
 async def download_file_from_s3():
     try:
-        s3.download_file(BUCKET_NAME, FILE_NAME, FILE_NAME)
+        s3.download_file(BUCKET_NAME, FILE_NAME, FILE_NAME, )
         print("Downloaded from S3")
     except Exception as e:
         print("Exception during download from S3: ", e)
