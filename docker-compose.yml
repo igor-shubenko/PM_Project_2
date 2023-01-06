@@ -11,5 +11,9 @@ services:
     volumes:
       - ./crud_server_app:/app
 
-
+  health_server:
+    build: ./health_server_app
+    restart: always
+    ports:
+      - 81:8765
 
